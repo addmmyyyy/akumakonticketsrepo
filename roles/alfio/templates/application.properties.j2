@@ -1,0 +1,15 @@
+# Database configuration
+spring.datasource.url=jdbc:postgresql://{{ db_host }}:5432/{{ db_name }}
+spring.datasource.username={{ db_user }}
+spring.datasource.password={{ db_password }}
+
+# Base URL configuration
+alfio.baseurl={{ alfio_base_url }}
+
+# Admin credentials
+alfio.admin.username={{ alfio_admin_username }}
+alfio.admin.password={{ alfio_admin_password }}
+
+# Other settings
+server.port=8080
+spring.profiles.active=prod

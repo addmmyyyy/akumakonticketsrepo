@@ -1,0 +1,16 @@
+---
+# Database configuration
+db_name: alfio
+db_user: alfio_user
+db_password: "{{ vault_db_password }}"
+db_host: "{{ hostvars[groups['db_servers'][0]]['ansible_host'] }}"
+
+# Alf.io configuration
+alfio_version: "3.0.0"
+alfio_admin_username: admin
+alfio_admin_password: "{{ vault_alfio_admin_password }}"
+alfio_base_url: "https://{{ inventory_hostname }}"
+
+# SSL/HTTPS configuration
+certbot_email: "your-email@example.com"
+domain_name: "{{ inventory_hostname }}"

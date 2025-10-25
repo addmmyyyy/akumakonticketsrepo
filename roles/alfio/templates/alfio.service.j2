@@ -1,0 +1,13 @@
+[Unit]
+Description=Alf.io Ticketing System
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/alfio
+ExecStart=/usr/bin/java -jar alfio-{{ alfio_version }}.jar
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

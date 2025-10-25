@@ -1,0 +1,52 @@
+---
+- name: Install Nginx and Certbot
+  apt:
+    name:
+      - nginx
+      - certbot
+      - python3-certbot-nginx
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Create Nginx site configuration
+  template:
+    src: nginx-site.conf.j2
+    dest: /etc/nginx/sites-available/alfio
+    mode: '0644'
+  become: yes
+  notify: reload nginx
+
+- name: Enable Nginx site
+  file:
+    src: /etc/nginx/sites-available/alfio
+    dest: /etc/nginx/sites-enabled/alfio
+    state: link
+  become: yes
+  notify: reload nginx
+
+- name: Remove default Nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  become: yes
+  notify: reload nginx
+
+- name: Ensure Nginx is started and enabled
+  systemd:
+    name: nginx
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Obtain SSL certificate
+  command: >
+    certbot --nginx 
+    -d {{ domain_name }}
+    --non-interactive
+    --agree-tos
+    -m {{ certbot_email }}
+    --redirect
+  become: yes
+  args:
+    creates: "/etc/letsencrypt/live/{{ domain_name }}"

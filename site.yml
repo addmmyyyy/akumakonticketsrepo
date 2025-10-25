@@ -1,0 +1,18 @@
+---
+- name: Deploy PostgreSQL Database
+  hosts: db_servers
+  roles:
+    - postgresql
+
+- name: Deploy Alf.io Application
+  hosts: alfio_servers
+  roles:
+    - alfio
+
+- name: Configure Nginx and SSL
+  hosts: webservers
+  roles:
+    - nginx
+
+- name: Display Deployment Information
+  import_playbook: display_credentials.yml

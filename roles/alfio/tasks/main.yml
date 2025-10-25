@@ -1,0 +1,52 @@
+---
+- name: Install Java and required packages
+  apt:
+    name:
+      - openjdk-17-jdk
+      - unzip
+      - curl
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Create Alf.io directory
+  file:
+    path: /opt/alfio
+    state: directory
+    mode: '0755'
+  become: yes
+
+- name: Download Alf.io release
+  get_url:
+    url: "https://github.com/alfio-event/alf.io/releases/download/{{ alfio_version }}/alfio-{{ alfio_version }}-boot.zip"
+    dest: /tmp/alfio.zip
+  become: yes
+
+- name: Extract Alf.io
+  unarchive:
+    src: /tmp/alfio.zip
+    dest: /opt/alfio
+    remote_src: yes
+  become: yes
+
+- name: Template Alf.io configuration
+  template:
+    src: application.properties.j2
+    dest: /opt/alfio/application.properties
+    mode: '0644'
+  become: yes
+
+- name: Create Alf.io service
+  template:
+    src: alfio.service.j2
+    dest: /etc/systemd/system/alfio.service
+    mode: '0644'
+  become: yes
+
+- name: Start and enable Alf.io service
+  systemd:
+    name: alfio
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  become: yes
